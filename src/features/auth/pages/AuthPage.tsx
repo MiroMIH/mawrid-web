@@ -104,7 +104,7 @@ export function AuthPage() {
               letterSpacing: '0.01em',
             }}
           >
-            © 2026 MAWRID · La plateforme B2B industrielle algérienne
+            © 2026 MAWRID · Votre espace client sécurisé 🔒
           </div>
         </div>
       </div>
