@@ -1,0 +1,113 @@
+import { useEffect } from 'react';
+import { Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../../store/authStore';
+import { AuthLeftPanel } from '../components/AuthLeftPanel';
+import { LoginForm } from '../components/LoginForm';
+
+export function AuthPage() {
+  const navigate        = useNavigate();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated());
+
+  useEffect(() => {
+    if (isAuthenticated) navigate('/', { replace: true });
+  }, [isAuthenticated, navigate]);
+
+  return (
+    <>
+      <style>{`
+        .auth-root * { box-sizing: border-box; }
+
+        /* ── Autofill detection (animation-name trick, works Chrome/Edge/Safari) ── */
+        @keyframes fl-autofill-on  { from {} to {} }
+        @keyframes fl-autofill-off { from {} to {} }
+        input:-webkit-autofill { animation-name: fl-autofill-on;  animation-duration: 1ms; }
+        input:not(:-webkit-autofill) { animation-name: fl-autofill-off; animation-duration: 1ms; }
+
+        /* Override browser's blue/yellow autofill background */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus {
+          -webkit-box-shadow: 0 0 0 100px #F7F6F3 inset !important;
+          -webkit-text-fill-color: #1A1A18 !important;
+          caret-color: #1A1A18;
+          transition: background-color 9999s ease-in-out 0s;
+        }
+
+        @keyframes authShake {
+          0%,100% { transform: translateX(0); }
+          18%     { transform: translateX(-8px); }
+          36%     { transform: translateX(8px); }
+          54%     { transform: translateX(-4px); }
+          72%     { transform: translateX(4px); }
+        }
+        @keyframes authFormIn {
+          from { opacity:0; transform: translateY(16px); }
+          to   { opacity:1; transform: translateY(0); }
+        }
+        .auth-form-wrap {
+          animation: authFormIn 0.55s 0.1s cubic-bezier(.4,0,.2,1) both;
+        }
+        .auth-scroll::-webkit-scrollbar { width: 3px; }
+        .auth-scroll::-webkit-scrollbar-track { background: transparent; }
+        .auth-scroll::-webkit-scrollbar-thumb { background: #E2E1DC; border-radius: 2px; }
+      `}</style>
+
+      <div
+        className="auth-root flex min-h-screen"
+        style={{ backgroundColor: '#F7F6F3' }}
+      >
+        {/* ── Left: dark panel (hidden on mobile) ── */}
+        <div className="hidden md:block flex-shrink-0" style={{ width: '55%' }}>
+          <AuthLeftPanel />
+        </div>
+
+        {/* ── Right: login form ── */}
+        <div
+          className="auth-scroll flex flex-col flex-1 overflow-y-auto"
+          style={{ backgroundColor: '#F7F6F3' }}
+        >
+          {/* Mobile logo */}
+          <div className="md:hidden flex items-center gap-3 px-6 pt-8 pb-2">
+            <div style={{
+              width: 38, height: 38, borderRadius: 10,
+              background: '#0D0D0D',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Zap style={{ width: 20, height: 20, color: '#F5A623' }} />
+            </div>
+            <span style={{
+              fontFamily: 'Syne, sans-serif',
+              fontWeight: 800,
+              fontSize: 17,
+              color: '#0D0D0D',
+              letterSpacing: '0.12em',
+            }}>
+              MAWRID
+            </span>
+          </div>
+
+          {/* Centered form */}
+          <div className="flex flex-1 items-center justify-center px-8 py-12">
+            <div className="auth-form-wrap w-full" style={{ maxWidth: 400 }}>
+              <LoginForm />
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div
+            className="text-center pb-6"
+            style={{
+              fontFamily: 'DM Sans, sans-serif',
+              fontSize: 10.5,
+              color: '#BBBBB4',
+              letterSpacing: '0.01em',
+            }}
+          >
+            © 2026 MAWRID · La plateforme B2B industrielle algérienne
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
