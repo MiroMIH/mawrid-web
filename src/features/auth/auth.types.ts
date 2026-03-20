@@ -1,18 +1,15 @@
-export type AuthRole = 'BUYER' | 'SUPPLIER';
-
 export interface LoginRequest {
   email: string;
   password: string;
-  role: AuthRole;
 }
 
 export interface RegisterRequest {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  phone: string;
-  wilayaCode: string;
-  role: AuthRole;
+  phone?: string;
   companyName?: string;
+  role?: string;
   password: string;
   confirmPassword: string;
 }
@@ -35,3 +32,4 @@ export interface AuthTokenResponse {
 }
 
 export type AuthTab = 'login' | 'register';
+

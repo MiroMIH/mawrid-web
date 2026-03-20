@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Eye, EyeOff, Loader2, Check, ArrowRight, ShoppingCart, Store, Users } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Check, ArrowRight, ShoppingCart, Users, CheckCircle2 } from 'lucide-react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLogin } from '../hooks/useAuth';
@@ -10,43 +11,23 @@ import { useLogin } from '../hooks/useAuth';
 const schema = z.object({
   email:    z.string().email('Email invalide'),
   password: z.string().min(1, 'Mot de passe requis'),
-  role:     z.enum(['BUYER', 'SUPPLIER']),
 });
 
 type FormData = z.infer<typeof schema>;
-
-const ROLES = [
-  {
-    value: 'BUYER' as const,
-    label: 'Acheteur',
-    icon: ShoppingCart,
-    description: 'Trouvez les meilleurs fournisseurs',
-  },
-  {
-    value: 'SUPPLIER' as const,
-    label: 'Fournisseur',
-    icon: Store,
-    description: 'Développez votre clientèle',
-  },
-];
-
-const roleSubheading: Record<string, string> = {
-  BUYER:    'Accédez à des centaines de fournisseurs vérifiés.',
-  SUPPLIER: 'Répondez aux appels d\'offres en temps réel.',
-};
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [shaking, setShaking]           = useState(false);
   const [success, setSuccess]           = useState(false);
+  const [searchParams]                  = useSearchParams();
+  const justRegistered                  = searchParams.get('registered') === 'true';
+  const navigate                        = useNavigate();
   const login = useLogin();
 
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { email: '', password: '', role: 'BUYER' },
+    defaultValues: { email: '', password: '' },
   });
-
-  const selectedRole = watch('role');
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -69,70 +50,37 @@ export function LoginForm() {
         >
           Bon retour 👋
         </h1>
+        <div className="flex items-center gap-2 mb-1">
+          <div className="p-1.5 rounded-lg" style={{ background: 'rgba(245,166,35,0.15)' }}>
+            <ShoppingCart className="w-4 h-4" style={{ color: '#D4880A' }} />
+          </div>
+          <span className="text-[13px] font-semibold" style={{ fontFamily: 'Syne, sans-serif', color: '#0D0D0D' }}>
+            Acheteur
+          </span>
+        </div>
         <p
           className="text-sm text-muted-foreground"
-          style={{ fontFamily: 'DM Sans, sans-serif', transition: 'all 0.2s' }}
+          style={{ fontFamily: 'DM Sans, sans-serif' }}
         >
-          {roleSubheading[selectedRole]}
+          Accédez à des centaines de fournisseurs vérifiés.
         </p>
       </div>
 
-      {/* ── Role Cards ── */}
-      <div className="grid grid-cols-2 gap-3 mb-6">
-        {ROLES.map(({ value, label, icon: Icon, description }) => {
-          const active = selectedRole === value;
-          return (
-            <button
-              key={value}
-              type="button"
-              onClick={() => setValue('role', value)}
-              className="relative flex flex-col items-start gap-1.5 p-3.5 rounded-xl border-2 text-left transition-all duration-150"
-              style={{
-                borderColor:     active ? '#F5A623' : 'rgba(0,0,0,0.10)',
-                background:      active ? 'rgba(245,166,35,0.05)' : '#FFFFFF',
-                boxShadow:       active ? '0 0 0 3px rgba(245,166,35,0.12)' : undefined,
-              }}
-            >
-              {/* Active dot */}
-              {active && (
-                <span
-                  className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full"
-                  style={{ background: '#F5A623' }}
-                />
-              )}
-              <div
-                className="p-1.5 rounded-lg"
-                style={{ background: active ? 'rgba(245,166,35,0.15)' : 'rgba(0,0,0,0.05)' }}
-              >
-                <Icon
-                  className="w-4 h-4"
-                  style={{ color: active ? '#D4880A' : '#888' }}
-                />
-              </div>
-              <div>
-                <p
-                  className="text-[13px] font-semibold leading-tight"
-                  style={{
-                    fontFamily: 'Syne, sans-serif',
-                    color: active ? '#0D0D0D' : '#555',
-                  }}
-                >
-                  {label}
-                </p>
-                <p
-                  className="text-[10.5px] leading-tight mt-0.5"
-                  style={{
-                    fontFamily: 'DM Sans, sans-serif',
-                    color: active ? '#888' : '#AAA',
-                  }}
-                >
-                  {description}
-                </p>
-              </div>
-            </button>
-          );
-        })}
-      </div>
+      {/* ── Registered success banner ── */}
+      {justRegistered && (
+        <div
+          className="flex items-start gap-2.5 rounded-lg px-4 py-3 mb-5 text-sm"
+          style={{
+            background:  'rgba(34,197,94,0.07)',
+            border:      '1px solid rgba(34,197,94,0.22)',
+            color:       '#15803d',
+            fontFamily:  'DM Sans, sans-serif',
+          }}
+        >
+          <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" style={{ color: '#16a34a' }} />
+          <span>Compte créé avec succès ! Connectez-vous pour accéder à votre espace.</span>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
 
@@ -211,7 +159,8 @@ export function LoginForm() {
               fontFamily: 'DM Sans, sans-serif',
             }}
           >
-            Email ou mot de passe incorrect. Vérifiez vos identifiants.
+            {(login.error as { response?: { data?: { message?: string } } })?.response?.data?.message
+              ?? 'Email ou mot de passe incorrect. Vérifiez vos identifiants.'}
           </div>
         )}
 
@@ -277,6 +226,7 @@ export function LoginForm() {
           style={{ color: '#0D0D0D' }}
           onMouseEnter={e => (e.currentTarget.style.color = '#D4880A')}
           onMouseLeave={e => (e.currentTarget.style.color = '#0D0D0D')}
+          onClick={() => navigate('/register')}
         >
           Créer un compte gratuit
         </button>

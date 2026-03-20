@@ -3,9 +3,9 @@ import { Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../../store/authStore';
 import { AuthLeftPanel } from '../components/AuthLeftPanel';
-import { LoginForm } from '../components/LoginForm';
+import { RegisterForm } from '../components/RegisterForm';
 
-export function AuthPage() {
+export function RegisterPage() {
   const navigate        = useNavigate();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated());
 
@@ -18,17 +18,10 @@ export function AuthPage() {
       <style>{`
         .auth-root * { box-sizing: border-box; }
 
-        /* ── Autofill detection (animation-name trick, works Chrome/Edge/Safari) ── */
-        @keyframes fl-autofill-on  { from {} to {} }
-        @keyframes fl-autofill-off { from {} to {} }
-        input:-webkit-autofill { animation-name: fl-autofill-on;  animation-duration: 1ms; }
-        input:not(:-webkit-autofill) { animation-name: fl-autofill-off; animation-duration: 1ms; }
-
-        /* Override browser's blue/yellow autofill background */
         input:-webkit-autofill,
         input:-webkit-autofill:hover,
         input:-webkit-autofill:focus {
-          -webkit-box-shadow: 0 0 0 100px #F7F6F3 inset !important;
+          -webkit-box-shadow: 0 0 0 100px #FAFAF8 inset !important;
           -webkit-text-fill-color: #1A1A18 !important;
           caret-color: #1A1A18;
           transition: background-color 9999s ease-in-out 0s;
@@ -62,7 +55,7 @@ export function AuthPage() {
           <AuthLeftPanel />
         </div>
 
-        {/* ── Right: login form ── */}
+        {/* ── Right: register form ── */}
         <div
           className="auth-scroll flex flex-col flex-1 overflow-y-auto"
           style={{ backgroundColor: '#F7F6F3' }}
@@ -77,10 +70,10 @@ export function AuthPage() {
               <Zap style={{ width: 20, height: 20, color: '#F5A623' }} />
             </div>
             <span style={{
-              fontFamily: 'Syne, sans-serif',
-              fontWeight: 800,
-              fontSize: 17,
-              color: '#0D0D0D',
+              fontFamily:    'Syne, sans-serif',
+              fontWeight:    800,
+              fontSize:      17,
+              color:         '#0D0D0D',
               letterSpacing: '0.12em',
             }}>
               MAWRID
@@ -89,8 +82,8 @@ export function AuthPage() {
 
           {/* Centered form */}
           <div className="flex flex-1 items-center justify-center px-8 py-12">
-            <div className="auth-form-wrap w-full" style={{ maxWidth: 400 }}>
-              <LoginForm />
+            <div className="auth-form-wrap w-full" style={{ maxWidth: 420 }}>
+              <RegisterForm />
             </div>
           </div>
 
@@ -99,12 +92,12 @@ export function AuthPage() {
             className="text-center pb-6"
             style={{
               fontFamily: 'DM Sans, sans-serif',
-              fontSize: 10.5,
-              color: '#BBBBB4',
+              fontSize:   10.5,
+              color:      '#BBBBB4',
               letterSpacing: '0.01em',
             }}
           >
-            © 2026 MAWRID · Votre espace client sécurisé 🔒
+            © 2026 MAWRID · Vos données sont protégées 🔒
           </div>
         </div>
       </div>
