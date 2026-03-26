@@ -38,10 +38,22 @@ const STYLES = `
   @keyframes cardUp2  { 0%,100%{transform:translateY(0)}   50%{transform:translateY(-5px)} }
   @keyframes navDrop  { from{opacity:0;transform:translateY(-5px)} to{opacity:1;transform:translateY(0)} }
   @keyframes drawer   { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
-  @keyframes glowPulse { 0%,100%{opacity:.55} 50%{opacity:.85} }
+  @keyframes glowPulse    { 0%,100%{opacity:.55} 50%{opacity:.85} }
+  @keyframes livePulse    { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.6);opacity:.4} }
+  @keyframes underlineDraw { from{transform:scaleX(0)} to{transform:scaleX(1)} }
+  @keyframes toastIn      { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes toastOut     { from{opacity:1;transform:translateY(0)} to{opacity:0;transform:translateY(10px)} }
+
+  .live-dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:#22C55E; animation:livePulse 1.8s ease-in-out infinite; flex-shrink:0; }
+  .hero-underline { position:relative; display:inline-block; }
+  .hero-underline::after { content:''; position:absolute; bottom:4px; left:0; right:0; height:4px; background:#F5A623; border-radius:3px; transform-origin:left; animation:underlineDraw .65s .9s ease-out both; }
+  .toast-enter { animation:toastIn .32s ease-out both; }
+  .toast-exit  { animation:toastOut .26s ease-in both; }
 
   .ticker-track         { display:flex; width:max-content; animation:ticker 40s linear infinite; }
   .ticker-track:hover   { animation-play-state:paused; }
+  .trust-card           { transition:border-color .22s ease,transform .22s ease; }
+  .trust-card:hover     { border-color:rgba(255,255,255,0.22) !important; transform:translateY(-4px); }
 
   .sr     { opacity:0; transform:translateY(16px); transition:opacity .65s ease,transform .65s ease; }
   .sr.in  { opacity:1; transform:translateY(0); }
@@ -74,6 +86,13 @@ const COMPANIES = [
   { name: 'ETUSA',                init: 'ET', color: '#0284C7' },
   { name: 'Groupe Hasnaoui',      init: 'GH', color: '#B45309' },
   { name: 'NCA Rouiba',           init: 'NC', color: '#15803D' },
+];
+
+// Top 3 reference clients — spotlighted in hero cards
+const FEATURED = [
+  { name: 'SONATRACH',         init: 'SN', color: '#C4811A', sector: 'Énergie & Pétrochimie' },
+  { name: 'CEVITAL Béjaïa',    init: 'CV', color: '#16A34A', sector: 'Agroalimentaire' },
+  { name: 'ArcelorMittal Annaba', init: 'AM', color: '#2563EB', sector: 'Sidérurgie' },
 ];
 
 const SECTORS = [
@@ -419,7 +438,10 @@ function HeroSection() {
         <div>
           {/* Pill badge */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 13px 5px 5px', borderRadius: 100, border: '1px solid rgba(245,166,35,0.2)', background: 'rgba(245,166,35,0.07)', marginBottom: 28, animation: 'fadeUp .5s .08s ease-out both' }}>
-            <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 100, background: '#F5A623', color: '#0A0A0A', letterSpacing: '.03em' }}>NOUVEAU</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: 'Inter, sans-serif', fontSize: 11, fontWeight: 600, padding: '2px 8px 2px 7px', borderRadius: 100, background: '#F5A623', color: '#0A0A0A', letterSpacing: '.03em' }}>
+              <span className="live-dot" style={{ background: '#0A0A0A', opacity: 0.6 }} />
+              EN DIRECT
+            </span>
             <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>18 secteurs industriels couverts</span>
           </div>
 
@@ -427,7 +449,7 @@ function HeroSection() {
           <h1 style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 'clamp(38px,4.8vw,62px)', color: '#FFFFFF', lineHeight: 1.06, letterSpacing: '-.03em', marginBottom: 22, animation: 'fadeUp .55s .16s ease-out both' }}>
             L'approvisionnement<br />
             industriel en Algérie,<br />
-            <span style={{ color: '#F5A623' }}>réinventé.</span>
+            <span className="hero-underline" style={{ color: '#F5A623' }}>réinventé.</span>
           </h1>
 
           {/* Body */}
@@ -490,24 +512,187 @@ function HeroSection() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function LogoTicker() {
-  const items = [...COMPANIES, ...COMPANIES];
+  const rest = COMPANIES.filter(c => !FEATURED.find(f => f.name === c.name));
+  const items = [...rest, ...rest];
   return (
-    <section style={{ background: '#fff', borderBottom: '1px solid rgba(0,0,0,0.06)', padding: '28px 0 24px' }}>
-      <p style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, fontWeight: 600, color: '#BBBBB4', textAlign: 'center', letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 20 }}>
-        Ils font confiance à Mawrid
+    <section style={{ background: '#0F0F0E', padding: '72px 0 60px', overflow: 'hidden' }}>
+
+      {/* Badge */}
+      <div style={{ textAlign: 'center', marginBottom: 18 }}>
+        <span style={{
+          display: 'inline-block',
+          fontFamily: 'Inter, sans-serif',
+          fontSize: 10,
+          fontWeight: 700,
+          letterSpacing: '.14em',
+          textTransform: 'uppercase',
+          color: '#C4811A',
+          border: '1px solid rgba(196,129,26,0.4)',
+          borderRadius: 100,
+          padding: '5px 16px',
+        }}>
+          Références clients
+        </span>
+      </div>
+
+      {/* Headline */}
+      <p style={{
+        fontFamily: 'Space Grotesk, sans-serif',
+        fontSize: 'clamp(26px, 3.5vw, 40px)',
+        fontWeight: 700,
+        color: '#FFFFFF',
+        textAlign: 'center',
+        lineHeight: 1.15,
+        marginBottom: 52,
+      }}>
+        Ils font confiance à{' '}
+        <span style={{ color: '#C4811A' }}>Mawrid</span>
       </p>
-      <div style={{ overflow: 'hidden', maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' }}>
-        <div className="ticker-track" style={{ gap: 10, padding: '2px 0' }}>
+
+      {/* 3 Hero cards */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        gap: 20,
+        padding: '0 24px',
+        flexWrap: 'wrap',
+        marginBottom: 56,
+      }}>
+        {FEATURED.map((c) => (
+          <div
+            key={c.name}
+            className="trust-card"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 18,
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.09)',
+              borderRadius: 22,
+              padding: '36px 44px',
+              minWidth: 200,
+              cursor: 'default',
+            }}
+          >
+            {/* Glowing monogram */}
+            <div style={{
+              width: 68,
+              height: 68,
+              borderRadius: 18,
+              background: c.color,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: `0 0 40px ${c.color}50, 0 0 80px ${c.color}20`,
+              flexShrink: 0,
+            }}>
+              <span style={{
+                fontFamily: 'Space Grotesk, sans-serif',
+                fontWeight: 800,
+                fontSize: 19,
+                color: '#fff',
+                letterSpacing: '.03em',
+              }}>{c.init}</span>
+            </div>
+
+            {/* Name + sector */}
+            <div style={{ textAlign: 'center' }}>
+              <p style={{
+                fontFamily: 'Space Grotesk, sans-serif',
+                fontWeight: 700,
+                fontSize: 16,
+                color: '#FFFFFF',
+                marginBottom: 5,
+                whiteSpace: 'nowrap',
+              }}>{c.name}</p>
+              <p style={{
+                fontFamily: 'Inter, sans-serif',
+                fontSize: 12,
+                fontWeight: 500,
+                color: 'rgba(255,255,255,0.35)',
+                letterSpacing: '.04em',
+                textTransform: 'uppercase',
+              }}>{c.sector}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Divider */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 18,
+        maxWidth: 860,
+        margin: '0 auto 28px',
+        padding: '0 32px',
+      }}>
+        <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.07)' }} />
+        <span style={{
+          fontFamily: 'Inter, sans-serif',
+          fontSize: 11,
+          fontWeight: 600,
+          color: 'rgba(255,255,255,0.22)',
+          whiteSpace: 'nowrap',
+          letterSpacing: '.1em',
+          textTransform: 'uppercase',
+        }}>
+          + {rest.length} autres entreprises
+        </span>
+        <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.07)' }} />
+      </div>
+
+      {/* Ticker — remaining companies */}
+      <div style={{
+        overflow: 'hidden',
+        maskImage: 'linear-gradient(to right, transparent, black 12%, black 88%, transparent)',
+        WebkitMaskImage: 'linear-gradient(to right, transparent, black 12%, black 88%, transparent)',
+      }}>
+        <div className="ticker-track" style={{ gap: 12, padding: '4px 0' }}>
           {items.map((c, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 14px', border: '1px solid rgba(0,0,0,0.07)', borderRadius: 8, background: '#fff', flexShrink: 0, height: 40 }}>
-              <div style={{ width: 24, height: 24, borderRadius: 5, background: c.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 9, color: '#fff', letterSpacing: '.02em' }}>{c.init}</span>
+            <div key={i} style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 9,
+              padding: '8px 16px',
+              border: '1px solid rgba(255,255,255,0.07)',
+              borderRadius: 10,
+              background: 'rgba(255,255,255,0.025)',
+              flexShrink: 0,
+              height: 44,
+            }}>
+              <div style={{
+                width: 28,
+                height: 28,
+                borderRadius: 7,
+                background: c.color + '28',
+                border: `1px solid ${c.color}50`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                <span style={{
+                  fontFamily: 'Space Grotesk, sans-serif',
+                  fontWeight: 700,
+                  fontSize: 9.5,
+                  color: c.color,
+                  letterSpacing: '.03em',
+                }}>{c.init}</span>
               </div>
-              <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 12.5, fontWeight: 500, color: '#3A3A36', whiteSpace: 'nowrap' }}>{c.name}</span>
+              <span style={{
+                fontFamily: 'Inter, sans-serif',
+                fontSize: 13,
+                fontWeight: 500,
+                color: 'rgba(255,255,255,0.5)',
+                whiteSpace: 'nowrap',
+              }}>{c.name}</span>
             </div>
           ))}
         </div>
       </div>
+
     </section>
   );
 }
@@ -636,6 +821,44 @@ function StatsSection() {
 // SECTORS
 // ─────────────────────────────────────────────────────────────────────────────
 
+function SectorCard({ s, i, visible }: { s: typeof SECTORS[0]; i: number; visible: boolean }) {
+  const [hov, setHov] = useState(false);
+  return (
+    <div
+      className={`sr ${visible ? 'in' : ''}`}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        background: '#fff',
+        border: `1px solid ${hov ? 'rgba(245,166,35,0.32)' : 'rgba(0,0,0,0.08)'}`,
+        borderRadius: 12,
+        padding: '18px 16px',
+        transitionDelay: `${i * 0.025}s`,
+        cursor: 'default',
+        transition: 'border-color .2s, box-shadow .2s',
+        boxShadow: hov ? '0 6px 28px rgba(245,166,35,0.09)' : 'none',
+      }}
+    >
+      <div style={{
+        width: 36, height: 36, borderRadius: 9,
+        background: hov ? 'rgba(245,166,35,0.1)' : '#F5F4F1',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        marginBottom: 10,
+        transition: 'background .2s, box-shadow .2s',
+        boxShadow: hov ? '0 0 0 1px rgba(245,166,35,0.22)' : 'none',
+      }}>
+        <s.Icon size={17} style={{ color: hov ? '#F5A623' : '#C4811A', transition: 'color .2s' }} />
+      </div>
+      <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 12.5, color: '#0A0A0A', lineHeight: 1.4, marginBottom: 3 }}>
+        {s.name}
+      </div>
+      <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, color: hov ? '#C4811A' : '#AAAAA4', transition: 'color .2s' }}>
+        {s.count} sous-catégories
+      </div>
+    </div>
+  );
+}
+
 function SectorsGrid() {
   const { ref, visible } = useReveal(0.05);
   return (
@@ -655,21 +878,7 @@ function SectorsGrid() {
 
         <div ref={ref} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(174px, 1fr))', gap: 10 }}>
           {SECTORS.map((s, i) => (
-            <div
-              key={s.name}
-              className={`hov-card sr ${visible ? 'in' : ''}`}
-              style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.08)', borderRadius: 12, padding: '18px 16px', transitionDelay: `${i * 0.025}s`, cursor: 'default' }}
-            >
-              <div style={{ width: 36, height: 36, borderRadius: 9, background: '#F5F4F1', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
-                <s.Icon size={17} style={{ color: '#C4811A' }} />
-              </div>
-              <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 12.5, color: '#0A0A0A', lineHeight: 1.4, marginBottom: 3 }}>
-                {s.name}
-              </div>
-              <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, color: '#AAAAA4' }}>
-                {s.count} sous-catégories
-              </div>
-            </div>
+            <SectorCard key={s.name} s={s} i={i} visible={visible} />
           ))}
         </div>
       </div>
@@ -879,6 +1088,87 @@ function Footer() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// LIVE ACTIVITY TOAST
+// ─────────────────────────────────────────────────────────────────────────────
+
+const ACTIVITIES = [
+  { icon: '🔔', msg: 'Nouveau fournisseur a répondu', detail: 'Roulements 6205 · Annaba',      time: '2 min' },
+  { icon: '📋', msg: 'Demande publiée',               detail: 'Tôles galvanisées 2mm · Oran',  time: '4 min' },
+  { icon: '✅', msg: 'Accord conclu',                 detail: 'Câbles électriques · Alger',    time: '9 min' },
+  { icon: '🏭', msg: 'Nouveau fournisseur inscrit',   detail: 'MECA PRECISION · Sétif',        time: '12 min' },
+  { icon: '🔔', msg: '14 offres reçues',              detail: 'Filtres hydrauliques · Béjaïa', time: '16 min' },
+];
+
+function LiveActivity() {
+  const [idx, setIdx] = useState(0);
+  const [phase, setPhase] = useState<'enter' | 'exit'>('enter');
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      const t = setInterval(() => {
+        setPhase('exit');
+        setTimeout(() => {
+          setIdx(i => (i + 1) % ACTIVITIES.length);
+          setPhase('enter');
+        }, 320);
+      }, 4800);
+      return () => clearInterval(t);
+    }, 2200);
+    return () => clearTimeout(delay);
+  }, []);
+
+  const a = ACTIVITIES[idx];
+  return (
+    <div
+      className={phase === 'enter' ? 'toast-enter' : 'toast-exit'}
+      style={{
+        position: 'fixed', bottom: 28, left: 28, zIndex: 300,
+        background: 'rgba(14,14,14,0.94)',
+        backdropFilter: 'blur(18px)',
+        WebkitBackdropFilter: 'blur(18px)',
+        border: '1px solid rgba(255,255,255,0.1)',
+        borderRadius: 14,
+        padding: '11px 14px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 11,
+        maxWidth: 272,
+        boxShadow: '0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04)',
+        pointerEvents: 'none',
+      }}
+    >
+      <div style={{
+        width: 36, height: 36, borderRadius: 9,
+        background: 'rgba(255,255,255,0.07)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: 17, flexShrink: 0,
+      }}>
+        {a.icon}
+      </div>
+      <div style={{ minWidth: 0, flex: 1 }}>
+        <p style={{
+          fontFamily: 'Inter, sans-serif', fontSize: 12.5, fontWeight: 600,
+          color: '#FFFFFF', marginBottom: 2,
+          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+        }}>{a.msg}</p>
+        <p style={{
+          fontFamily: 'Inter, sans-serif', fontSize: 11.5,
+          color: 'rgba(255,255,255,0.38)',
+          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+        }}>{a.detail}</p>
+      </div>
+      <span style={{
+        fontFamily: 'Inter, sans-serif', fontSize: 10.5,
+        color: 'rgba(255,255,255,0.18)',
+        whiteSpace: 'nowrap', flexShrink: 0, alignSelf: 'flex-start',
+      }}>
+        {a.time}
+      </span>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // PAGE
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -891,6 +1181,7 @@ export function LandingPage() {
     <>
       <style dangerouslySetInnerHTML={{ __html: STYLES }} />
       <Navbar />
+      <LiveActivity />
       <HeroSection />
       <LogoTicker />
       <HowItWorks />

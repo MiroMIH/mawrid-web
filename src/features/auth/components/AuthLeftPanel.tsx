@@ -27,23 +27,30 @@ export function AuthLeftPanel() {
     >
       <style>{`
         @keyframes lp-drift-a {
-          0%,100% { transform: translate(0%,   0%)   scale(1);    }
-          30%     { transform: translate(6%,  -10%)  scale(1.06); }
-          65%     { transform: translate(-5%,  7%)   scale(0.96); }
+          0%,100% { transform: translate(0%,    0%)   scale(1);    opacity: 0.80; }
+          20%     { transform: translate(8%,  -13%)   scale(1.12); opacity: 1;    }
+          55%     { transform: translate(-5%,   7%)   scale(0.92); opacity: 0.60; }
+          80%     { transform: translate(3%,   -5%)   scale(1.05); opacity: 0.90; }
         }
         @keyframes lp-drift-b {
-          0%,100% { transform: translate(0%,   0%)   scale(1);    }
-          40%     { transform: translate(-7%,  6%)   scale(1.04); }
-          70%     { transform: translate(5%,  -5%)   scale(0.97); }
+          0%,100% { transform: translate(0%,    0%)   scale(1);    opacity: 0.75; }
+          30%     { transform: translate(-9%,  10%)   scale(1.10); opacity: 1;    }
+          65%     { transform: translate(6%,   -7%)   scale(0.91); opacity: 0.55; }
         }
         @keyframes lp-drift-c {
-          0%,100% { transform: translate(0%,  0%)   scale(1);    }
-          50%     { transform: translate(4%, -6%)   scale(1.05); }
+          0%,100% { transform: translate(0%,   0%)   scale(1);    opacity: 0.50; }
+          50%     { transform: translate(6%,  -9%)   scale(1.10); opacity: 1;    }
         }
         @keyframes lp-drift-d {
-          0%,100% { transform: translate(0%,  0%)   scale(1);    }
-          35%     { transform: translate(-4%, 8%)   scale(0.95); }
-          70%     { transform: translate(3%, -3%)   scale(1.03); }
+          0%,100% { transform: translate(0%,   0%)   scale(1);    opacity: 0.70; }
+          35%     { transform: translate(-5%,  11%)  scale(0.90); opacity: 0.45; }
+          70%     { transform: translate(5%,  -4%)   scale(1.08); opacity: 1;    }
+        }
+        @keyframes lp-drift-e {
+          0%,100% { transform: translate(0%,   0%)   scale(1);    opacity: 0.55; }
+          25%     { transform: translate(-5%,  -9%)  scale(1.28); opacity: 1;    }
+          60%     { transform: translate(5%,   7%)   scale(0.78); opacity: 0.40; }
+          85%     { transform: translate(-2%,  -4%)  scale(1.10); opacity: 0.80; }
         }
         @keyframes lp-logo-in   { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
         @keyframes lp-text-in   { from { opacity:0; transform: translateY(18px);  } to { opacity:1; transform: translateY(0); } }
@@ -53,7 +60,7 @@ export function AuthLeftPanel() {
           0%,100% { opacity:0.65; transform: scaleX(1);    }
           50%     { opacity:1;    transform: scaleX(1.06); }
         }
-        .lp-orb-base { animation: lp-orb-in 2.5s ease-out both; }
+        .lp-orb-base { animation: lp-orb-in 2s ease-out both; }
         .lp-logo     { animation: lp-logo-in  0.7s 0.2s  cubic-bezier(.4,0,.2,1) both; }
         .lp-text     { animation: lp-text-in  0.8s 0.4s  cubic-bezier(.4,0,.2,1) both; }
         .lp-stats    { animation: lp-stats-in 0.7s 0.65s cubic-bezier(.4,0,.2,1) both; }
@@ -61,10 +68,21 @@ export function AuthLeftPanel() {
       `}</style>
 
       {/* ── Background orbs ── */}
-      <div className="lp-orb-base absolute pointer-events-none" style={{ width:'85%', height:'85%', top:'-28%', right:'-18%', background:'radial-gradient(circle at 40% 40%, rgba(245,166,35,0.13) 0%, transparent 65%)', filter:'blur(48px)', animation:'lp-orb-in 2.5s 0s both, lp-drift-a 24s 2.5s ease-in-out infinite' }} />
-      <div className="lp-orb-base absolute pointer-events-none" style={{ width:'75%', height:'70%', bottom:'-22%', left:'-20%', background:'radial-gradient(circle at 55% 55%, rgba(210,130,20,0.10) 0%, transparent 65%)', filter:'blur(56px)', animation:'lp-orb-in 2.5s 0.3s both, lp-drift-b 30s 2.8s ease-in-out infinite' }} />
-      <div className="lp-orb-base absolute pointer-events-none" style={{ inset:'-10%', background:'radial-gradient(ellipse 55% 45% at 52% 48%, rgba(245,166,35,0.055) 0%, transparent 70%)', filter:'blur(30px)', animation:'lp-orb-in 3s 0.8s both, lp-drift-c 38s 3s ease-in-out infinite' }} />
-      <div className="lp-orb-base absolute pointer-events-none" style={{ width:'50%', height:'50%', top:'-5%', left:'-10%', background:'radial-gradient(circle at 60% 60%, rgba(245,166,35,0.07) 0%, transparent 65%)', filter:'blur(44px)', animation:'lp-orb-in 2.5s 0.5s both, lp-drift-d 26s 3s ease-in-out infinite' }} />
+
+      {/* A — large top-right, bright amber, fast pulse */}
+      <div className="lp-orb-base absolute pointer-events-none" style={{ width:'90%', height:'90%', top:'-30%', right:'-20%', background:'radial-gradient(circle at 38% 38%, rgba(245,166,35,0.26) 0%, rgba(245,140,20,0.10) 45%, transparent 65%)', filter:'blur(52px)', animation:'lp-orb-in 1.8s 0s both, lp-drift-a 11s 2s ease-in-out infinite' }} />
+
+      {/* B — large bottom-left, warm orange tint for aurora depth */}
+      <div className="lp-orb-base absolute pointer-events-none" style={{ width:'80%', height:'78%', bottom:'-26%', left:'-22%', background:'radial-gradient(circle at 55% 55%, rgba(225,95,15,0.20) 0%, rgba(210,120,20,0.08) 50%, transparent 68%)', filter:'blur(60px)', animation:'lp-orb-in 2s 0.2s both, lp-drift-b 15s 2.3s ease-in-out infinite' }} />
+
+      {/* C — full-screen soft center ambient */}
+      <div className="lp-orb-base absolute pointer-events-none" style={{ inset:'-10%', background:'radial-gradient(ellipse 55% 45% at 52% 48%, rgba(245,166,35,0.09) 0%, transparent 70%)', filter:'blur(32px)', animation:'lp-orb-in 2.6s 0.6s both, lp-drift-c 22s 3s ease-in-out infinite' }} />
+
+      {/* D — top-left secondary amber */}
+      <div className="lp-orb-base absolute pointer-events-none" style={{ width:'58%', height:'58%', top:'-8%', left:'-12%', background:'radial-gradient(circle at 58% 58%, rgba(245,166,35,0.16) 0%, transparent 62%)', filter:'blur(46px)', animation:'lp-orb-in 2s 0.4s both, lp-drift-d 13s 2.5s ease-in-out infinite' }} />
+
+      {/* E — NEW: small hot-core orb, bottom-right, fast dramatic pulse */}
+      <div className="lp-orb-base absolute pointer-events-none" style={{ width:'42%', height:'42%', bottom:'6%', right:'4%', background:'radial-gradient(circle at 50% 50%, rgba(255,190,50,0.42) 0%, rgba(245,140,20,0.18) 40%, transparent 65%)', filter:'blur(20px)', animation:'lp-orb-in 1.5s 1.0s both, lp-drift-e 7s 2.5s ease-in-out infinite' }} />
 
       {/* Dot grid */}
       <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage:'radial-gradient(rgba(255,255,255,0.032) 1px, transparent 1px)', backgroundSize:'24px 24px' }} />
@@ -73,7 +91,7 @@ export function AuthLeftPanel() {
       <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage:'repeating-linear-gradient(0deg, transparent, transparent 47px, rgba(255,255,255,0.010) 47px, rgba(255,255,255,0.010) 48px)' }} />
 
       {/* Edge vignette */}
-      <div className="absolute inset-0 pointer-events-none" style={{ background:[ 'radial-gradient(ellipse 80% 60% at 0% 0%,    rgba(8,9,9,0.65) 0%, transparent 55%)', 'radial-gradient(ellipse 60% 70% at 100% 100%, rgba(8,9,9,0.55) 0%, transparent 55%)', 'linear-gradient(to top,    rgba(8,9,9,0.60) 0%, transparent 30%)', 'linear-gradient(to bottom, rgba(8,9,9,0.40) 0%, transparent 25%)', ].join(', ') }} />
+      <div className="absolute inset-0 pointer-events-none" style={{ background:[ 'radial-gradient(ellipse 80% 60% at 0% 0%,    rgba(8,9,9,0.75) 0%, transparent 55%)', 'radial-gradient(ellipse 60% 70% at 100% 100%, rgba(8,9,9,0.65) 0%, transparent 55%)', 'linear-gradient(to top,    rgba(8,9,9,0.72) 0%, transparent 35%)', 'linear-gradient(to bottom, rgba(8,9,9,0.52) 0%, transparent 28%)', 'linear-gradient(to right,  rgba(8,9,9,0.30) 0%, transparent 40%)', ].join(', ') }} />
 
       {/* ── Content ── */}
       <div className="relative z-10 flex flex-col h-full px-10 py-10">
