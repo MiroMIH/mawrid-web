@@ -6,8 +6,8 @@ import { DemandeStatusBadge } from './DemandeStatusBadge';
 
 interface Props {
   demande: Demande;
-  onClose: (id: number) => void;
-  onCancel: (id: number) => void;
+  onClose: (id: string) => void;
+  onCancel: (id: string) => void;
 }
 
 function DeadlineLabel({ days }: { days: number }) {

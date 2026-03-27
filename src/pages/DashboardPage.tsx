@@ -196,7 +196,7 @@ export function DashboardPage() {
 
   const statCards = isSupplier ? supplierStats : buyerStats;
   const quickActions = isSupplier ? supplierActions : buyerActions;
-  const activityData = isSupplier ? supplierActivityData : buyerActivityData;
+  const activityData = (isSupplier ? supplierActivityData : buyerActivityData) as { day: string; [key: string]: string | number }[];
   const chartKey1 = isSupplier ? 'appels' : 'demandes';
   const chartKey2 = isSupplier ? 'propositions' : 'offres';
   const chartLabel1 = isSupplier ? "Appels d'offres" : 'Demandes';

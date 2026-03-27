@@ -41,13 +41,13 @@ export function DemandesListPage() {
   const [activeStatus, setActiveStatus] = useState<StatusFilter>('');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortBy>('date');
-  const [closeTargetId, setCloseTargetId] = useState<number | null>(null);
-  const [cancelTargetId, setCancelTargetId] = useState<number | null>(null);
+  const [closeTargetId, setCloseTargetId] = useState<string | null>(null);
+  const [cancelTargetId, setCancelTargetId] = useState<string | null>(null);
 
   const { data, isLoading } = useDemandes(activeStatus ? { status: activeStatus } : {});
 
-  const closeMutation = useCloseDemande(closeTargetId ?? 0);
-  const cancelMutation = useCancelDemande(cancelTargetId ?? 0);
+  const closeMutation = useCloseDemande(closeTargetId ?? '');
+  const cancelMutation = useCancelDemande(cancelTargetId ?? '');
 
   const cancelTarget = data?.content.find(d => d.id === cancelTargetId);
 
